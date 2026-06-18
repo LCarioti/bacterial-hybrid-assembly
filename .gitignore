@@ -1,0 +1,35 @@
+# ==============================================================================
+# PIPELINE OUTPUT DIRECTORIES
+# ==============================================================================
+# Ignore all output folders generated locally during pipeline runs
+raw/
+qc/
+nanopore/
+assembly/
+reference/
+logs/
+mapping/
+
+# ==============================================================================
+# SEQUENCING & BIOINFORMATIC FILES
+# ==============================================================================
+# Prevent accidental upload of heavy sequencing, assembly, or mapping files
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.fasta
+*.fa
+*.bam
+*.bai
+*.sam
+*.png
+*.html
+*.json
+
+# ==============================================================================
+# SYSTEM FILES
+# ==============================================================================
+# Ignore temporary OS metadata files
+.DS_Store
+Thumbs.db
