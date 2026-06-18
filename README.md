@@ -20,14 +20,14 @@ This pipeline orchestrates several widely used bioinformatic tools. Since all to
 
 | Tool | Purpose | GitHub Repository / Source |
 | :--- | :--- | :--- |
-| **fastp** | Short-read QC and adapter trimming | [OpenGene/fastp](https://github.com) |
-| **filtlong** | Long-read quality and length filtering | [rrwick/Filtlong](https://github.com) |
-| **Flye** | De novo long-read assembly | [mikolayenko/Flye](https://github.com) |
-| **MaSuRCA (POLCA)** | Polishing using short reads | [alekseyzimin/masurca](https://github.com) |
-| **QUAST** | Quality assessment of the assembly | [ablab/quast](https://github.com) |
-| **minimap2** | Long-read mapping against assembly | [lh3/minimap2](https://github.com) |
-| **BWA** | Short-read indexing and mapping | [lh3/bwa](https://github.com) |
-| **samtools** | BAM file sorting, indexing, and statistics | [samtools/samtools](https://github.com) |
+| **fastp** | Short-read QC and adapter trimming | [OpenGene/fastp](https://github.com/opengene/fastp) |
+| **filtlong** | Long-read quality and length filtering | [rrwick/Filtlong](https://github.com/rrwick/Filtlong) |
+| **Flye** | De novo long-read assembly | [mikolayenko/Flye](https://github.com/rrwick/Filtlong) |
+| **MaSuRCA (POLCA)** | Polishing using short reads | [alekseyzimin/masurca](https://github.com/alekseyzimin/masurca) |
+| **QUAST** | Quality assessment of the assembly | [ablab/quast](https://github.com/ablab/quast) |
+| **minimap2** | Long-read mapping against assembly | [lh3/minimap2](https://github.com/lh3/minimap2) |
+| **BWA** | Short-read indexing and mapping | [lh3/bwa](https://github.com/lh3/BWA) |
+| **samtools** | BAM file sorting, indexing, and statistics | [samtools/samtools](https://github.com/samtools/samtools) |
 
 ---
 
@@ -57,8 +57,8 @@ cd Flye && python setup.py install
 ```
 
 #### 3. Polishing & Evaluation Tools
-* **POLCA** is bundled inside **MaSuRCA**. Clone [alekseyzimin/masurca](https://github.com), follow their installer script, and ensure `polca.sh` (or `polca`) is extracted.
-* **QUAST** requires Python dependencies. Clone [ablab/quast](https://github.com) and install it via `python setup.py install`.
+* **POLCA** is bundled inside **MaSuRCA**. Clone [alekseyzimin/masurca](https://github.com/alekseyzimin/masurca), follow their installer script, and ensure `polca.sh` (or `polca`) is extracted.
+* **QUAST** requires Python dependencies. Clone [ablab/quast](https://github.com/ablab/quast) and install it via `python setup.py install`.
 
 ---
 
@@ -121,8 +121,8 @@ Once the pipeline completes successfully, you will obtain a polished, high-quali
 
 ### 1. Functional Annotation with Bakta
 To predict genes, tRNA, rRNA, and functionally annotate your genome, **Bakta** is highly recommended due to its updated databases and antimicrobial resistance (AMR) gene detection. You can use it via the web interface or run it locally.
-* **Web Interface:** Upload your `*.PolcaCorrected.fa` directly to the official [Bakta Web Server](https://computational.bio).
-* **Command-line Software:** Clone the repository from [OSF-Biolab/bakta](https://github.com) and run it locally:
+* **Web Interface:** Upload your `*.PolcaCorrected.fa` directly to the official [Bakta Web Server](https://bakta.computational.bio/).
+* **Command-line Software:** Clone the repository from [OSF-Biolab/bakta](https://github.com/oschwengers/bakta) and run it locally:
   ```bash
   bakta --db /path/to/bakta_db --threads <threads> --output assembly/annotation/ assembly/assembly.fasta.PolcaCorrected.fa
   ```
