@@ -120,22 +120,21 @@ The pipeline organizes outputs into clean, structured directories:
 Once the pipeline completes successfully, you will obtain a polished, high-quality draft genome (`assembly/assembly.fasta.PolcaCorrected.fa`). To fully characterize your bacterial isolate, we recommend the following downstream analyses:
 
 ### 1. Functional Annotation with Bakta
-To predict genes, tRNA, rRNA, and functionally annotate your genome, **Bakta** is highly recommended over older tools like Prokka due to its updated databases and antimicrobial resistance (AMR) gene detection.
-* **Source:** [OSF-Biolab/bakta](https://github.com)
-* **Quick Usage:**
+To predict genes, tRNA, rRNA, and functionally annotate your genome, **Bakta** is highly recommended due to its updated databases and antimicrobial resistance (AMR) gene detection. You can use it via the web interface or run it locally.
+* **Web Interface:** Upload your `*.PolcaCorrected.fa` directly to the official [Bakta Web Server](https://computational.bio).
+* **Command-line Software:** Clone the repository from [OSF-Biolab/bakta](https://github.com) and run it locally:
   ```bash
   bakta --db /path/to/bakta_db --threads <threads> --output assembly/annotation/ assembly/assembly.fasta.PolcaCorrected.fa
   ```
 
 ### 2. Multi-Locus Sequence Typing (MLST) via Institut Pasteur
-To identify the Sequence Type (ST) and clonal complex of your isolate for epidemiological tracking, you can use the official **Institut Pasteur MLST databases** (especially critical for pathogens like *Klebsiella pneumoniae*, *Listeria*, or *Pseudomonas aeruginosa*).
+To identify the Sequence Type (ST) and clonal complex of your isolate for epidemiological tracking, you can use the official **Institut Pasteur MLST databases**.
 * **Web Interface:** You can directly upload your `*.PolcaCorrected.fa` file to the [Institut Pasteur MLST Web Portal](https://pasteur.fr).
 * **Command Line Alternative:** Alternatively, you can use the command-line tool `mlst` (by Torsten Seemann) which includes Pasteur schemes:
   ```bash
   mlst assembly/assembly.fasta.PolcaCorrected.fa
   ```
-
-
+  
 ##  Citations
 If you use this pipeline in your research, please remember to cite the individual tools utilized in the workflow (links to publications can be found in their respective GitHub repositories).
 
