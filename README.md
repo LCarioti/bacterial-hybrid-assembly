@@ -22,7 +22,7 @@ This pipeline orchestrates several widely used bioinformatic tools. Since all to
 | :--- | :--- | :--- |
 | **fastp** | Short-read QC and adapter trimming | [OpenGene/fastp](https://github.com/opengene/fastp) |
 | **filtlong** | Long-read quality and length filtering | [rrwick/Filtlong](https://github.com/rrwick/Filtlong) |
-| **Flye** | De novo long-read assembly | [mikolayenko/Flye](https://github.com/rrwick/Filtlong) |
+| **Flye** | De novo long-read assembly | [mikolayenko/Flye](https://github.com/mikolmogorov/Flye) |
 | **MaSuRCA (POLCA)** | Polishing using short reads | [alekseyzimin/masurca](https://github.com/alekseyzimin/masurca) |
 | **QUAST** | Quality assessment of the assembly | [ablab/quast](https://github.com/ablab/quast) |
 | **minimap2** | Long-read mapping against assembly | [lh3/minimap2](https://github.com/lh3/minimap2) |
@@ -129,7 +129,7 @@ To predict genes, tRNA, rRNA, and functionally annotate your genome, **Bakta** i
 
 ### 2. Multi-Locus Sequence Typing (MLST) via Institut Pasteur
 To identify the Sequence Type (ST) and clonal complex of your isolate for epidemiological tracking, you can use the official **Institut Pasteur MLST databases**.
-* **Web Interface:** You can directly upload your `*.PolcaCorrected.fa` file to the [Institut Pasteur MLST Web Portal](https://pasteur.fr).
+* **Web Interface:** You can directly upload your `*.PolcaCorrected.fa` file to the [Institut Pasteur MLST Web Portal](https://bigsdb.pasteur.fr/).
 * **Command Line Alternative:** Alternatively, you can use the command-line tool `mlst` (by Torsten Seemann) which includes Pasteur schemes:
   ```bash
   mlst assembly/assembly.fasta.PolcaCorrected.fa
