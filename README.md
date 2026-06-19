@@ -71,14 +71,14 @@ To make the pipeline universal, the script searches for tools dynamically in you
 nano ~/.bashrc
 
 # Add your GitHub installation folders to the PATH (Modify with your actual paths)
-export PATH="/path/to/github/fastp:\$PATH"
-export PATH="/path/to/github/minimap2:\$PATH"
-export PATH="/path/to/github/bwa:\$PATH"
-export PATH="/path/to/github/samtools:\$PATH"
-export PATH="/path/to/github/Filtlong/bin:\$PATH"
-export PATH="/path/to/github/Flye/bin:\$PATH"
-export PATH="/path/to/github/masurca/bin:\$PATH"
-export PATH="/path/to/github/quast:\$PATH"
+export PATH="/path/to/github/fastp:$PATH"
+export PATH="/path/to/github/minimap2:$PATH"
+export PATH="/path/to/github/bwa:$PATH"
+export PATH="/path/to/github/samtools:$PATH"
+export PATH="/path/to/github/Filtlong/bin:$PATH"
+export PATH="/path/to/github/Flye/bin:$PATH"
+export PATH="/path/to/github/masurca/bin:$PATH"
+export PATH="/path/to/github/quast:$PATH"
 
 # Save, exit, and reload the terminal
 source ~/.bashrc
