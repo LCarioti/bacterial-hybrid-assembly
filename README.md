@@ -1,12 +1,13 @@
-# Bacterial Hybrid Assembly Pipeline 
+# Bacterial Hybrid Assembly Pipeline
 
-A robust Bash pipeline for automated hybrid de novo assembly of bacterial genomes, combining long, high-error reads (Oxford Nanopore) with short, high-accuracy reads (Illumina). 
+A robust Bash pipeline for automated hybrid de novo assembly of bacterial genomes, combining long, high-error reads (Oxford Nanopore) with short, high-accuracy reads (Illumina).
 
 The pipeline performs automated quality control, read filtering, long-read assembly, short-read polishing, evaluation, and structural re-mapping.
 
 ##  Workflow Overview
+
 1. **Short-read QC**: Automated adapter trimming and quality filtering using `fastp`.
-2. **Long-read Filtering**: Size and quality selection using `filtlong` (supports Standard and Aggressive modes).
+2. **Long-read Filtering**: Size and quality selection using `filtlong` based on the targeted genome size mode.
 3. **De Novo Assembly**: Long-read assembly using `flye` (`--nano-hq`).
 4. **Polishing**: Hybrid error-correction using Illumina reads via `POLCA` (MaSuRCA).
 5. **Evaluation**: Assembly metrics generation against a reference using `QUAST`.
@@ -19,10 +20,10 @@ This pipeline orchestrates several widely used bioinformatic tools. Since all to
 ### Dependency List & Sources
 
 | Tool | Purpose | GitHub Repository / Source |
-| :--- | :--- | :--- |
+| --- | --- | --- |
 | **fastp** | Short-read QC and adapter trimming | [OpenGene/fastp](https://github.com/opengene/fastp) |
 | **filtlong** | Long-read quality and length filtering | [rrwick/Filtlong](https://github.com/rrwick/Filtlong) |
-| **Flye** | De novo long-read assembly | [mikolayenko/Flye](https://github.com/mikolmogorov/Flye) |
+| **Flye** | De novo long-read assembly | [mikolmogorov/Flye](https://github.com/mikolmogorov/Flye) |
 | **MaSuRCA (POLCA)** | Polishing using short reads | [alekseyzimin/masurca](https://github.com/alekseyzimin/masurca) |
 | **QUAST** | Quality assessment of the assembly | [ablab/quast](https://github.com/ablab/quast) |
 | **minimap2** | Long-read mapping against assembly | [lh3/minimap2](https://github.com/lh3/minimap2) |
@@ -36,27 +37,34 @@ This pipeline orchestrates several widely used bioinformatic tools. Since all to
 If you wish to replicate the native installation, follow these steps for each tool.
 
 #### 1. Core Tools (Compilation required)
+
 For tools written in C/C++ like `fastp`, `minimap2`, `bwa`, and `samtools`, clone the repo and run `make`:
+
 ```bash
 # Example for Minimap2
-git clone https://github.com.git
+git clone https://github.com/lh3/minimap2.git
 cd minimap2 && make
 # Repeat similar compilation steps for bwa, fastp, and samtools as per their GitHub readmes.
+
 ```
 
 #### 2. Python & C++ Hybrid Tools
+
 Tools like `Flye` and `Filtlong` require compilation and a proper Python environment:
+
 ```bash
 # Example for Filtlong
-git clone https://github.com.git
+git clone https://github.com/rrwick/Filtlong.git
 cd Filtlong && make bin/filtlong
 
 # Example for Flye
-git clone https://github.com.git
+git clone https://github.com/mikolmogorov/Flye.git
 cd Flye && python setup.py install
+
 ```
 
 #### 3. Polishing & Evaluation Tools
+
 * **POLCA** is bundled inside **MaSuRCA**. Clone [alekseyzimin/masurca](https://github.com/alekseyzimin/masurca), follow their installer script, and ensure `polca.sh` (or `polca`) is extracted.
 * **QUAST** requires Python dependencies. Clone [ablab/quast](https://github.com/ablab/quast) and install it via `python setup.py install`.
 
@@ -82,6 +90,7 @@ export PATH="/path/to/github/quast:$PATH"
 
 # Save, exit, and reload the terminal
 source ~/.bashrc
+
 ```
 
 The pipeline will automatically run a pre-flight check to verify if all 8 tools are correctly exposed and executable before processing your sequencing data.
@@ -89,55 +98,77 @@ The pipeline will automatically run a pre-flight check to verify if all 8 tools 
 ## 📖 Usage
 
 ```bash
-./bacterial_pipeline.sh <R1.fq.gz> <R2.fq.gz> <nanopore.fq.gz> <reference.fasta> <threads> [mode]
+./bacterial_pipeline.sh <R1> <R2> <nanopore.fastq.gz> <reference.fasta> <threads> [mode]
+
 ```
 
 ### Arguments:
+
 * `<R1>` / `<R2>`: Forward and reverse Illumina paired-end reads (FastQ compressed).
 * `<nanopore.fastq.gz>`: Raw Oxford Nanopore reads.
 * `<reference.fasta>`: Close reference genome for QUAST evaluation.
 * `<threads>`: Number of CPU cores to allocate.
-* `[mode]`: (*Optional*) Assembly mode:
-  * `standard`: Keeps ONT reads > 2000 bp. Ideal for preserving small plasmids. (Default)
-  * `aggressive`: Keeps ONT reads > 6000 bp (top 90%). Best for resolving complex repeats, rRNA operons, and closing chromosomes.
+* `[mode]`: (*Optional*) Target size selection for dynamic `filtlong` filtering (Default: `Medium`):
+* `Small`   : Keeps 200,000,000 bp (Genomes 0.5 - 2.0 Mb, e.g., *Campylobacter*)
+* `Medium`  : Keeps 500,000,000 bp (Genomes 2.0 - 4.0 Mb, e.g., *Listeria*, *Staphylococcus*)
+* `Large`   : Keeps 850,000,000 bp (Genomes 4.0 - 6.0 Mb, e.g., *E. coli*)
+* `Huge`    : Keeps 1,300,000,000 bp (Genomes > 6.0 Mb, e.g., *Pseudomonas*)
+
+
 
 ### Example:
+
 ```bash
-./bacterial_pipeline.sh reads_R1.fastq.gz reads_R2.fastq.gz ont_raw.fastq.gz ref.fasta 16 aggressive
+./bacterial_pipeline.sh reads_R1.fastq.gz reads_R2.fastq.gz ont_raw.fastq.gz ref.fasta 16 Large
+
 ```
 
 ##  Output Structure
+
 The pipeline organizes outputs into clean, structured directories:
+
 * `raw/` & `reference/`: Symlinks to your input datasets.
 * `qc/`: Trimmed Illumina reads and `fastp` HTML/JSON reports.
-* `nanopore/`: Size-filtered ONT reads.
-* `assembly/`: Raw Flye output, polished genome (`*.PolcaCorrected.fa`), and `QUAST` reports.
-* `mapping/`: Sorted and indexed BAM files for both ONT and Illumina reads, including `flagstat` coverage statistics.
-* `logs/`: Complete stdout/stderr console logs for reproducibility.
+* `nanopore/`: Size-filtered ONT reads (`nano.fastq.gz`).
+* `assembly/`: Raw Flye output, polished genome (`assembly.fasta.PolcaCorrected.fa`), and `quast/` report directory.
+* `mapping/`: Sorted and indexed BAM files for both ONT and Illumina reads, including `flagstat` coverage statistics (`ont_flagstat.txt`, `illumina_flagstat.txt`).
+* `logs/`: Complete stdout/stderr console logs for reproducibility (`pipeline.log`).
 
 ##  Next Steps & Downstream Analysis
 
 Once the pipeline completes successfully, you will obtain a polished, high-quality draft genome (`assembly/assembly.fasta.PolcaCorrected.fa`). To fully characterize your bacterial isolate, we recommend the following downstream analyses:
 
 ### 1. Functional Annotation with Bakta
+
 To predict genes, tRNA, rRNA, and functionally annotate your genome, **Bakta** is highly recommended due to its updated databases and antimicrobial resistance (AMR) gene detection. You can use it via the web interface or run it locally.
+
 * **Web Interface:** Upload your `*.PolcaCorrected.fa` directly to the official [Bakta Web Server](https://bakta.computational.bio/).
 * **Command-line Software:** Clone the repository from [OSF-Biolab/bakta](https://github.com/oschwengers/bakta) and run it locally:
-  ```bash
-  bakta --db /path/to/bakta_db --threads <threads> --output assembly/annotation/ assembly/assembly.fasta.PolcaCorrected.fa
-  ```
+```bash
+bakta --db /path/to/bakta_db --threads <threads> --output assembly/annotation/ assembly/assembly.fasta.PolcaCorrected.fa
+
+```
+
+
 
 ### 2. Multi-Locus Sequence Typing (MLST) via Institut Pasteur
+
 To identify the Sequence Type (ST) and clonal complex of your isolate for epidemiological tracking, you can use the official **Institut Pasteur MLST databases**.
+
 * **Web Interface:** You can directly upload your `*.PolcaCorrected.fa` file to the [Institut Pasteur MLST Web Portal](https://bigsdb.pasteur.fr/).
 * **Command Line Alternative:** Alternatively, you can use the command-line tool `mlst` (by Torsten Seemann) which includes Pasteur schemes:
-  ```bash
-  mlst assembly/assembly.fasta.PolcaCorrected.fa
-  ```
-  
+```bash
+mlst assembly/assembly.fasta.PolcaCorrected.fa
+
+```
+
+
+
 ##  Citations
+
 If you use this pipeline in your research, please remember to cite the individual tools utilized in the workflow (links to publications can be found in their respective GitHub repositories).
 
 ##  License
-This project is licensed under the **GNU General Public License v3.0**. You are free to copy, modify, and distribute this software, provided that any derivative works are also licensed under the GPLv3. See the [LICENSE](LICENSE) file for details.
+
+This project is licensed under the **GNU General Public License v3.0**. You are free to copy, modify, and distribute this software, provided that any derivative works are also licensed under the GPLv3. See the [LICENSE](https://www.google.com/search?q=LICENSE) file for details.
 
