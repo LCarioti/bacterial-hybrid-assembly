@@ -95,7 +95,7 @@ source ~/.bashrc
 
 The pipeline will automatically run a pre-flight check to verify if all 8 tools are correctly exposed and executable before processing your sequencing data.
 
-## 📖 Usage
+##  Usage
 
 ```bash
 ./bacterial_pipeline.sh <R1> <R2> <nanopore.fastq.gz> <reference.fasta> <threads> [mode]
